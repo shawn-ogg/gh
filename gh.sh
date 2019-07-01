@@ -4,30 +4,28 @@
 #
 # gh [remote] [branch]
 
-git rev-parse 2>/dev/null
-
-if [[ $? != 0 ]]
+if ! git rev-parse 2>/dev/null
 then
     echo "Not a git repository."
     exit 1
 fi
 
 remote="origin"
-if [ ! -z "$1" ]
+if [ -n "$1" ]
 then
     remote="$1"
 fi
 
 remote_url="remote.${remote}.url"
 
-giturl=$(git config --get $remote_url)
+giturl=$(git config --get "$remote_url")
 if [ -z "$giturl" ]
 then
     echo "$remote_url not set."
     exit 1
 fi
 
-giturl=${giturl/git\@github\.com\:/https://github.com/}
+giturl=$(echo "${giturl}" | sed 's#git@github.com:#https://github.com/#')
 giturl=${giturl%\.git}
 
 if [ -z "$2" ]
@@ -37,10 +35,14 @@ else
     branch="$2"
 fi
 
-if [ ! -z "$branch" ]
+if [ -n "$branch" ]
 then
     giturl="${giturl}/tree/${branch}"
 fi
 
-open $giturl
-exit 0
+if command -v xdg-open >/dev/null
+then
+    xdg-open "$giturl"
+else
+    open "$giturl"
+fi
