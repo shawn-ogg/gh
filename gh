@@ -35,9 +35,11 @@ else
     branch="$2"
 fi
 
+path=$(git rev-parse --show-prefix)
+
 if [ -n "$branch" ]
 then
-    giturl="${giturl}/tree/${branch}"
+    giturl="${giturl}/tree/${branch}/${path}"
 fi
 
 if command -v xdg-open >/dev/null
