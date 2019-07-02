@@ -25,7 +25,7 @@ then
     exit 1
 fi
 
-giturl=$(echo "${giturl}" | sed 's#git@github.com:#https://github.com/#')
+giturl=$(echo "${giturl}" | sed 's#git@\(.*\):#https://\1/#')
 giturl=${giturl%\.git}
 
 if [ -z "$2" ]
@@ -42,7 +42,7 @@ fi
 
 if command -v xdg-open >/dev/null
 then
-    xdg-open "$giturl"
+    xdg-open "$giturl" &
 else
-    open "$giturl"
+    open "$giturl" &
 fi
